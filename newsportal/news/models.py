@@ -12,13 +12,14 @@ class Author(models.Model):
         for post in posts_by:
             post_rating += post.rating
 
-            for comment in Comment.objects.filter(post=post.pk):
+            for comment in Comment.objects.filter(post_id=post.pk):
                 comments_rating += comment.rating
 
-        for comment in Comment.objects.filter(author=self.pk):
+        for comment in Comment.objects.filter(user_id=self.pk):
             comments_rating += comment.rating
 
-        self.rating += (post_rating * 3) + comments_rating
+        self.rating = (post_rating * 3) + comments_rating
+        self.save()
 
 
 class Category(models.Model):
