@@ -1,0 +1,19 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+
+{% block title %}
+{{ post.title }}
+{% endblock title %}
+ 
+{% block content %}
+    <h3 class="card-title text-uppercase text-dark">{{post.title}}</h3>
+    <div class="text-center">
+        {{ post.content|censor }}
+    </div>
+    <div class="justify-content-between d-flex pb3">
+        <p>{{post.author.user_id.username}}</p>
+        <p>{{post.publish_date|date:'d M Y'}}</p>
+    </div>
+
+{% endblock content %}
