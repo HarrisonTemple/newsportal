@@ -1,0 +1,57 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}
+     Search News
+{% endblock title %}
+
+{% load custom_filters %}
+
+{% block content %}
+    <h2 class="display-2 pb-5 text-uppercase text-dark">Search News</h2>
+
+   <form action="" method="get">
+       {{ filterset.form.as_p }}
+       <input type="submit" value="Find" />
+   </form>
+
+{% if posts %}
+    {% for post in posts %}
+    <div class="row d-flex flex-wrap align-items-center justify-content-center">
+        <div class="col-lg-4 col-sm-12">
+            <h3 class="card-title text-uppercase text-dark"><a href="/news/{{post.pk}}">{{post.title}}</a></h3>
+            <div >
+                <ul class="navbar-nav text-uppercase justify-content-end align-items-center flex-grow-1 pe-3">
+                    <li class="nav-item">
+                        {{ post.content|truncatechars:20 }}
+                        <span class="meta-date">{{ post.publish_date|date:'d M Y' }}</span>
+                    </li>
+                </ul>
+            </div>
+            <br/>
+        </div>
+    </div>
+    {%endfor%}
+    <div style="text-align:center">
+        {% if page_obj.has_previous %}
+            <a href="?{% with_context page=page_obj.previous_page_number %}"><svg class="chevron-left" style="width: 24px; height: 24px"><use xlink:href="#chevron-left"></use></svg></a>
+            <a href="?{% with_context page=1 % }" >1</a>
+            {% if page_obj.previous_page_number != 1 %}
+                ...
+            <a href="?{% with_context page=page_obj.previous_page_number %}"><span class="meta-date">{{ page_obj.previous_page_number }}</span></a>
+
+            {% endif %}
+        {% endif %}
+
+       <span class="meta-date">{{ page_obj.number }}</span>
+
+        {% if page_obj.has_next %}
+            {% if paginator.num_pages != page_obj.next_page_number %}
+                <a href="?{% with_context page=page_obj.next_page_number %}"><span class="meta-date">{{ page_obj.next_page_number }}</span></a>
+                ...
+            {% endif %}
+            <a href="?{% with_context page=page_obj.paginator.num_pages %}"><span class="meta-date">{{ page_obj.paginator.num_pages }}</span></a>
+            <a href="?{% with_context page=page_obj.next_page_number %}"><svg class="chevron-right" style="width: 24px; height: 24px"><use xlink:href="#chevron-right"></use></svg></a>
+        {% endif %}
+    {% endif %}
+    {% endblock content %}
+    </div>

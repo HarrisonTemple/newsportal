@@ -16,3 +16,11 @@ def censor(text: str):
         print(f'censor filter should only be applied to text ({type(text)})')
 
     return text
+
+@register.simple_tag(takes_context=True)
+def with_context(context, **kwargs):
+    c = context['request'].GET.copy()
+    for key, arg in kwargs.items():
+        c[key] = arg
+    return c.urlencode()
+

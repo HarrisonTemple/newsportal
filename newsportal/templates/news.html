@@ -23,26 +23,27 @@
         </div>
     </div>
     {%endfor%}
+    <div style="text-align:center">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}"><svg class="chevron-left" style="width: 24px; height: 24px"><use xlink:href="#chevron-left"></use></svg></a>
+                <a href="?page=1">1</a>
+                {% if page_obj.previous_page_number != 1 %}
+                    ...
+                <a href="?page={{ page_obj.previous_page_number }}"><span class="meta-date">{{ page_obj.previous_page_number }}</span></a>
 
-    {% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}"><svg class="chevron-left" style="width: 24px; height: 24px"><use xlink:href="#chevron-left"></use></svg></a>
-        <a href="?page=1">1</a>
-        {% if page_obj.previous_page_number != 1 %}
-            ...
-        <a href="?page={{ page_obj.previous_page_number }}"><span class="meta-date">{{ page_obj.previous_page_number }}</span></a>
+                {% endif %}
+            {% endif %}
 
+           <span class="meta-date">{{ page_obj.number }}</span>
+
+            {% if page_obj.has_next %}
+                {% if paginator.num_pages != page_obj.next_page_number %}
+                    <a href="?page={{ page_obj.next_page_number }}"><span class="meta-date">{{ page_obj.next_page_number }}</span></a>
+                    ...
+                {% endif %}
+                <a href="?page={{ page_obj.paginator.num_pages }}"><span class="meta-date">{{ page_obj.paginator.num_pages }}</span></a>
+                <a href="?page={{ page_obj.next_page_number }}"><svg class="chevron-right" style="width: 24px; height: 24px"><use xlink:href="#chevron-right"></use></svg></a>
+            {% endif %}
         {% endif %}
-    {% endif %}
-
-   <span class="meta-date">{{ page_obj.number }}</span>
-
-    {% if page_obj.has_next %}
-        {% if paginator.num_pages != page_obj.next_page_number %}
-            <a href="?page={{ page_obj.next_page_number }}"><span class="meta-date">{{ page_obj.next_page_number }}</span></a>
-            ...
-        {% endif %}
-        <a href="?page={{ page_obj.paginator.num_pages }}"><span class="meta-date">{{ page_obj.paginator.num_pages }}</span></a>
-        <a href="?page={{ page_obj.next_page_number }}"><svg class="chevron-right" style="width: 24px; height: 24px"><use xlink:href="#chevron-right"></use></svg></a>
-    {% endif %}
-{% endif %}
-{% endblock content %}
+        {% endblock content %}
+    </div>
