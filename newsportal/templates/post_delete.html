@@ -1,0 +1,20 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+
+{% block title %}
+{{ post.title }}
+{% endblock title %}
+ 
+{% block content %}
+
+    <h3 class="card-title text-uppercase text-dark">Delete {{ object.name }}</h3>
+    <div class="text-center">
+        <form action="" method="post">
+            {% csrf_token %}
+            <p>Do you want to delete {{ object.name }} ?<p>
+            <input type="submit" value="Save" />
+        </form>
+    </div>
+
+{% endblock content %}
