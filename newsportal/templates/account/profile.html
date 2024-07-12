@@ -1,0 +1,21 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+
+{% block title %}
+Your Profile
+{% endblock title %}
+ 
+{% block content %}
+    <h3 class="card-title text-uppercase text-dark">Edit Profile</h3>
+    <div class="text-center">
+
+    </div>
+    <div class="justify-content-between d-flex pb3">
+        <p>{{request.user.username}}</p>
+        <p>{{request.user.group}}</p>
+    </div>
+    {% if not is_author %}
+    <button> <a href="become_author/"> Become an author</a> </button>
+    {% endif %}
+{% endblock content %}

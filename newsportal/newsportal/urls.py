@@ -16,9 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from news.views import UserProfileView, become_author
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('flatpages/', include('django.contrib.flatpages.urls')),
-    path('news/', include('news.urls'))
+    path('news/', include('news.urls')),
+    path('accounts/', include('allauth.urls')),
+    path('accounts/profile/', UserProfileView.as_view(), name='user_profile'),
+    path('accounts/profile/become_author/', become_author, name='become_author'),
 ]
