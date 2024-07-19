@@ -2,13 +2,12 @@ import django.contrib.auth.views
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.contrib.auth.models import Group
-from .models import Post
+from .models import Post, Category, CategorySubscribers
 from .filters import PostFilter
 from .forms import PostAddForm
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
-
 
 
 class PostList(ListView):
@@ -23,6 +22,16 @@ class PostDetail(DetailView):
     template_name = 'post.html'
     context_object_name = 'post'
 
+    def post(self, request, *args, **kwargs):
+        cat = request.POST['category']
+        if request.user is not None:
+            if not Category.objects.filter(cat_name=cat).filter(subscribers=request.user).exists():
+                sub = CategorySubscribers(
+                    subscribers=request.user,
+                    category=Category.objects.get(cat_name=cat)
+                )
+                sub.save()
+        return redirect(request.get_full_path())
 class PostSearch(ListView):
     model = Post
     template_name = 'posts_search.html'
@@ -80,6 +89,7 @@ class UserProfileView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data( **kwargs)
         context['is_author'] = self.request.user.groups.filter(name='author').exists()
+        context['categories'] = Category.objects.filter(subscribers=self.request.user)
         return context
 
 

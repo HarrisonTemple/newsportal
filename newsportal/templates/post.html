@@ -5,7 +5,7 @@
 {% block title %}
 {{ post.title }}
 {% endblock title %}
- 
+
 {% block content %}
     <h3 class="card-title text-uppercase text-dark">{{post.title}}</h3>
     <div class="text-center">
@@ -15,5 +15,13 @@
         <p>{{post.author.user_id.username}}</p>
         <p>{{post.publish_date|date:'d M Y'}}</p>
     </div>
-
+    <div class="text-center">
+        {% for cat in post.category.all %}
+            <form method="post" action="?">
+            {% csrf_token %}
+            <input name="category" type = "hidden" value = "{{cat}}">
+            <button type="submit">{{ cat.cat_name }}</button>
+            </form>
+        {% endfor %}
+    </div>
 {% endblock content %}

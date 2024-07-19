@@ -13,7 +13,10 @@ Your Profile
     </div>
     <div class="justify-content-between d-flex pb3">
         <p>{{request.user.username}}</p>
-        <p>{{request.user.group}}</p>
+        <p>Subscribed Categories:</p>
+        {% for cat in categories %}
+            <p>{{cat.cat_name}}</p>
+        {% endfor %}
     </div>
     {% if not is_author %}
     <button> <a href="become_author/"> Become an author</a> </button>
