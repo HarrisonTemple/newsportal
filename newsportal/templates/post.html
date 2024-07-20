@@ -12,7 +12,7 @@
         {{ post.content|censor }}
     </div>
     <div class="justify-content-between d-flex pb3">
-        <p>{{post.author.user_id.username}}</p>
+        <p>{{post.author.user_ref.username}}</p>
         <p>{{post.publish_date|date:'d M Y'}}</p>
     </div>
     <div class="text-center">

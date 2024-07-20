@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New posts this week!</title>
+</head>
+<body>
+    {% for p,l in posts %}
+        <a href={{l}}>{{p.title}}</a>
+        <p>{{p.content|truncatechars:50}}...</p>
+    {% endfor %}
+</body>
+</html>

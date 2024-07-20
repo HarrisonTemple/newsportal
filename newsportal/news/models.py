@@ -5,7 +5,7 @@ from django.urls import reverse
 
 
 class Author(models.Model):
-    user_id = models.OneToOneField(User, on_delete=models.CASCADE)
+    user_ref = models.OneToOneField(User, on_delete=models.CASCADE)
     rating = models.FloatField(default=0.0)
 
     def update_rating(self):
