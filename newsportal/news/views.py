@@ -10,7 +10,7 @@ from .forms import PostAddForm
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
-
+from newsportal.tasks import new_post_notification
 
 class PostList(ListView):
     model = Post
@@ -60,7 +60,10 @@ class PostAddView(PermissionRequiredMixin, CreateView):
     def form_valid(self, form):
         f = form.save(commit=False)
         f.post_type = Post.news
-        return super().form_valid(f)
+        f.author = Author.objects.get(user_ref=self.request.user)
+        f.save()
+        form.save_m2m()
+        return super().form_valid(form)
 
 class ArticleAddView(PermissionRequiredMixin, CreateView):
     form_class = PostAddForm
@@ -76,21 +79,24 @@ class ArticleAddView(PermissionRequiredMixin, CreateView):
         f.save()
         form.save_m2m()
 
-        site = self.request.build_absolute_uri(f.get_absolute_url())
-        meta = {'link': site}
-        html = render_to_string('mailing/new post.html', {'post': f, 'meta': meta})
+        def send_messages():
+            site = self.request.build_absolute_uri(f.get_absolute_url())
+            meta = {'link': site}
+            html = render_to_string('mailing/new post.html', {'post': f, 'meta': meta})
 
-        recipients = [x['subscribers__email'] for x in CategorySubscribers.objects.filter(category__in=f.category.all()).exclude(subscribers__email__isnull=True).exclude(subscribers__email__exact='').values('subscribers__email')]
-        cats = ", ".join([x['cat_name'] for x in f.category.all().values('cat_name')])
+            recipients = [x['subscribers__email'] for x in CategorySubscribers.objects.filter(category__in=f.category.all()).exclude(subscribers__email__isnull=True).exclude(subscribers__email__exact='').values('subscribers__email')]
+            cats = ", ".join([x['cat_name'] for x in f.category.all().values('cat_name')])
 
-        message = EmailMultiAlternatives(
-            subject=f'New article in {cats} categories!',
-            body=f.content[:150] + '...',
-            from_email='daniilka1995@ya.ru',
-            to=recipients
-        )
-        message.attach_alternative(html, 'text/html')
-        message.send()
+            message = EmailMultiAlternatives(
+                subject=f'New article in {cats} categories!',
+                body=f.content[:150] + '...',
+                from_email='daniilka1995@ya.ru',
+                to=recipients
+            )
+            message.attach_alternative(html, 'text/html')
+            message.send()
+
+        new_post_notification(send_messages)
         return super().form_valid(form)
 
 class PostUpdateView(PermissionRequiredMixin, UpdateView):
